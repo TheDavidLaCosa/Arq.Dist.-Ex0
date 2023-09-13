@@ -1,3 +1,16 @@
-def __main__():
-    print("Hola")
-    
+def init_server():
+    # Server creation
+    print("a")
+
+if __name__ == "__main__":
+
+    i=0
+
+    # Reading file containing the servers
+    n_elements=5
+
+    # Initaiating the servers   
+    while i < n_elements:
+        i+=1
+
+    # TODO: Send message to tell the server to start
