@@ -21,22 +21,28 @@ def handle_client(client, address):
 
     connected = True
 
-    while connected:
-        # Reading the header of the message to know the length
-        length = client.recv(HEADER_SIZE)
+    try:
+        while connected:
+            # Reading the header of the message to know the length
+            length = client.recv(HEADER_SIZE)
 
-        # Checking if the message is not none (sometimes the client sends none during the first connection)
-        if length:
-            length = int(length.decode(FORMAT))
+            # Checking if the message is not none (sometimes the client sends none during the first connection)
+            if length:
+                length = int(length.decode(FORMAT))
 
-            # Reading the message
-            msg = client.recv(length).decode(FORMAT)
+                # Reading the message
+                msg = client.recv(length).decode(FORMAT)
 
-            # Checking if the connection is terminated
-            if msg == DISCONNECT_MESSAGE:
-                connected = False
-                print(f'Client {address[1]} has disconnected')
+                # Checking if the connection is terminated
+                if msg == DISCONNECT_MESSAGE:
+                    connected = False
+                    print(f'Client {address[1]} has disconnected')
 
+    # Handling unexpected disconnect
+    except ConnectionResetError:
+        print(f'Client {address[1]} has disconnected unexpectedly')
+
+    # Deleting the thread
     client.close()
 
 
@@ -69,7 +75,7 @@ if __name__ == "__main__":
 
 
         #Sending information to the client
-        client.send(bytes(message, FORMAT))
+        client.send(message.encode(FORMAT))
         time.sleep(5)
 
 

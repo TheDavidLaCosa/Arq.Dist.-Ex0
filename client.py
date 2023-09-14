@@ -7,6 +7,18 @@ HEADER_SIZE = 5
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "DISC"
 
+# Function that adds the header to the message
+def format_message(text):
+    text = f'[Server message]: ' + text
+    text = f'{len(text):<{HEADER_SIZE}}' + text
+
+    return text
+
+def send(s):
+    s.close()
+
+
+
 if __name__ == "__main__":
 
     # Connection to the server
