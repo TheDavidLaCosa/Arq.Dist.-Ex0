@@ -1,19 +1,25 @@
 import socket
+import threading
+
+import utils as u
 
 HEADER_SIZE = 5
+FORMAT = "utf-8"
+DISCONNECT_MESSAGE = "DISC"
 
 if __name__ == "__main__":
 
     # Connection to the server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(("127.0.0.1", 1500))
+    s.connect(("127.0.0.1", u.PORT))
 
-    # Lisemimg to all the messages
+    # Listening to all the messages
     while True:
         full_msg = ""
         is_new_msg = True
 
         while True:
+
             # Receiving the message in small sizes
             msg = s.recv(HEADER_SIZE)
 
@@ -27,7 +33,7 @@ if __name__ == "__main__":
                 is_new_msg = False
 
             # Adding the part of the message received and adding it to the full message
-            full_msg += msg.decode("utf-8")
+            full_msg += msg.decode(FORMAT)
 
             # Showing the full message
             if len(full_msg) - HEADER_SIZE == length:
