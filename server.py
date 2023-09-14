@@ -10,8 +10,12 @@ def update(value):
 if __name__ == "__main__":
     # Server creation
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((socket.gethostname(), 1000))
+    s.bind(("127.0.0.1", 1500))
+    s.listen(5)
 
+    print(" ----------------------------\n"
+          "|           SERVER           |\n"
+          " ----------------------------\n\n")
     while True:
         client, address = s.accept()
         print(f'Connection {address} de {client}')
