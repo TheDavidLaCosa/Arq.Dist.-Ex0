@@ -38,6 +38,8 @@ def handle_client(client, address):
                     connected = False
                     print(f'Client {address[1]} has disconnected')
 
+                print(msg)  # TODO: Print
+
     # Handling unexpected disconnect
     except ConnectionResetError:
         print(f'Client {address[1]} has disconnected unexpectedly')
@@ -69,7 +71,7 @@ if __name__ == "__main__":
         thread = threading.Thread(target=handle_client, args=(client, address))
         thread.start()
 
-        print(f'Connection nº{threading.active_count() - 1}: {address[1]}')
+        print(f'Connection nº{threading.active_count() - 1}: {address[1]}')  # TODO: Fer que s'incrementi i es decrementi quan entra i s'envà o solament incrementar?
 
         message = format_message("Hola!")
 

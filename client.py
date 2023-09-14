@@ -7,15 +7,17 @@ HEADER_SIZE = 5
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "DISC"
 
+
 # Function that adds the header to the message
 def format_message(text):
-    text = f'[Server message]: ' + text
     text = f'{len(text):<{HEADER_SIZE}}' + text
 
     return text
 
-def send(s):
-    s.close()
+
+def send(s, text):
+    text = format_message(text)
+    s.send(text.encode(FORMAT))
 
 
 
@@ -24,6 +26,9 @@ if __name__ == "__main__":
     # Connection to the server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(("127.0.0.1", u.PORT))
+
+    send(s, DISCONNECT_MESSAGE)
+    exit()
 
     # Listening to all the messages
     while True:
