@@ -7,6 +7,7 @@ import utils as u
 HEADER_SIZE = 5
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "DISC"
+users = []
 
 # Function that adds the header to the message
 def format_message(text):
@@ -15,6 +16,18 @@ def format_message(text):
     text = f'{len(text):<{HEADER_SIZE}}' + text
 
     return text
+
+# Function that adds a user to the user list
+def addUser(user):
+    users.append(user)
+
+# Function that deletes a user from the user list
+def deleteUser(user):
+    users.remove(user)
+
+def send(client, message):
+    client.send(message.encode(FORMAT))
+
 
 # Funtion that handles multiple clients
 def handle_client(client, address):
@@ -37,12 +50,14 @@ def handle_client(client, address):
                 if msg == DISCONNECT_MESSAGE:
                     connected = False
                     print(f'Client {address[1]} has disconnected')
+                    deleteUser((client,address[1]))
                 else:
                     print(f'The client with ID = {address[1]} said \'{msg}\'')
 
     # Handling unexpected disconnect
     except ConnectionResetError:
         print(f'Client {address[1]} has disconnected unexpectedly')
+        deleteUser((client,address[1]))
 
     # Deleting the thread
     client.close()
@@ -72,15 +87,17 @@ if __name__ == "__main__":
         thread.start()
 
         print(f'Connection nº{threading.active_count() - 1}: {address[1]}')  # TODO: Fer que s'incrementi i es decrementi quan entra i s'envà o solament incrementar?
+        addUser((client,address[1]))
 
         message = format_message("Hola!")
 
 
         #Sending information to the client
-        client.send(message.encode(FORMAT))
-        time.sleep(5)
+        send(client, message)
+        time.sleep(3)
 
-        client.send(message.encode(FORMAT))
+        client.send(message.encode(FORMAT)) # TODO: Gestionar enviament a clients no existens
+        print(users)
 
 
 
