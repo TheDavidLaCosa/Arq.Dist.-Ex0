@@ -1,6 +1,7 @@
 import socket
 import threading
 import sys
+import time
 
 import utils as u
 
@@ -13,6 +14,13 @@ shutdown = False
 # Function that adds the header to the message
 def format_message(text):
     text = f'{len(text):<{HEADER_SIZE}}' + text
+    return text
+
+
+# Function that generates the structure of the message
+def format_action(mode, value):
+    text = f'{len(str(mode)):<{2}}{value}'
+    print(f'MESSAGE: {text}')
 
     return text
 
@@ -27,14 +35,44 @@ def send(s, text):
 # Function that controlls the user input
 def handle_input(sock):
 
+    time.sleep(3)
+
     while True:
 
         if shutdown:
             sock.close()
         else:
-            txt = input("Message: ")
-            print(txt)
+
+            # Asking for the action that is going to be sent
+            mode = input("Mode (1 = read, 2 = update): ")
+            try:
+                mode = int(mode)
+
+                # Checking if the number is 1 or 2
+                if mode != 1 and mode != 2:
+                    print("[ERROR]: The value must be 1 or 2.")
+                    continue
+
+            # Handling the possible conversion error
+            except ValueError:
+                print("[ERROR]: The value must be an int.")
+                continue
+
+            # Asking for the value
+            value = input("Value: ")
+            try:
+                value = int(value)
+
+            # Handling the possible conversion error
+            except ValueError:
+                print("[ERROR]: The value must be an int.")
+                continue
+
+            print(value)
+
+            txt = format_action(mode, value)
             send(sock, txt)
+
 
 if __name__ == "__main__":
 
