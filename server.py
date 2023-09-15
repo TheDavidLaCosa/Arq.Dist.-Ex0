@@ -10,12 +10,34 @@ DISCONNECT_MESSAGE = "DISC"
 users = []
 
 
+def read():
+    print("Read")
+
+
+def update(value):
+    print("Update")
+
 # Function that adds the header to the message
 def format_message(text):
     text = f'[Server message]: ' + text
     text = f'{len(text):<{HEADER_SIZE}}' + text
 
     return text
+
+
+# Function that decodes the received message
+def deformat_message(text):
+
+    # Getting the values
+    mode = int(text[:1])
+    value = text[2:]
+
+    if mode == 1:
+        read()
+    elif mode == 2:
+        update(value)
+    else:
+        print(f'[ERROR]: Action {mode} doesn\'t exist')
 
 
 # Function that adds a user to the user list
@@ -48,12 +70,15 @@ def handle_client(client, address):
                 # Reading the message
                 msg = client.recv(length).decode(FORMAT)
 
-                # Checking if the connection is terminated
+                # Checking if the connection has been terminated
                 if msg == DISCONNECT_MESSAGE:
                     connected = False
                     print(f'Client {address[1]} has disconnected')
                     deleteUser((client, address[1]))
                 else:
+                    # Decoding the message received
+                    deformat_message(msg)
+
                     print(f'The client with ID = {address[1]} said \'{msg}\'')
 
     # Handling unexpected disconnect
@@ -100,9 +125,3 @@ if __name__ == "__main__":
         print(users)
 
 
-def read():
-    print("Read")
-
-
-def update(value):
-    print("Update")

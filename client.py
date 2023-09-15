@@ -35,7 +35,7 @@ def send(s, text):
 # Function that controlls the user input
 def handle_input(sock):
 
-    time.sleep(3)
+    time.sleep(1.5)
 
     while True:
 
