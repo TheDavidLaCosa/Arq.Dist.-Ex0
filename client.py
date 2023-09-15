@@ -19,7 +19,13 @@ def send(s, text):
     text = format_message(text)
     s.send(text.encode(FORMAT))
 
+# Function that controlls the user input
+def handle_input(sock):
 
+    while True:
+        txt = input("Message: ")
+        print(txt)
+        send(sock, txt)
 
 if __name__ == "__main__":
 
@@ -27,8 +33,12 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(("127.0.0.1", u.PORT))
 
-    send(s, DISCONNECT_MESSAGE)
-    exit()
+    # send(s, DISCONNECT_MESSAGE)
+    # exit()
+
+    # Watch for client input
+    thread = threading.Thread(target=handle_input, args=(s,))
+    thread.start()
 
     # Listening to all the messages
     while True:

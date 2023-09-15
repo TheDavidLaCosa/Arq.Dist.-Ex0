@@ -37,8 +37,8 @@ def handle_client(client, address):
                 if msg == DISCONNECT_MESSAGE:
                     connected = False
                     print(f'Client {address[1]} has disconnected')
-
-                print(msg)  # TODO: Print
+                else:
+                    print(f'The client with ID = {address[1]} said \'{msg}\'')
 
     # Handling unexpected disconnect
     except ConnectionResetError:
@@ -79,6 +79,8 @@ if __name__ == "__main__":
         #Sending information to the client
         client.send(message.encode(FORMAT))
         time.sleep(5)
+
+        client.send(message.encode(FORMAT))
 
 
 
