@@ -96,7 +96,7 @@ if __name__ == "__main__":
         send(client, message)
         time.sleep(3)
 
-        client.send(message.encode(FORMAT)) # TODO: Gestionar enviament a clients no existens
+        send(client, message) # TODO: Gestionar enviament a clients no existens (al fer broadcast)
         print(users)
 
 

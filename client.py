@@ -18,6 +18,9 @@ def format_message(text):
 
 
 def send(s, text):
+
+    # TODO: if input = "exit" => disconnect (shutdown client's terminal too)
+
     text = format_message(text)
     s.send(text.encode(FORMAT))
 
@@ -38,9 +41,6 @@ if __name__ == "__main__":
     # Connection to the server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(("127.0.0.1", u.PORT))
-
-    # send(s, DISCONNECT_MESSAGE)
-    # exit()
 
     # Watch for client input
     thread = threading.Thread(target=handle_input, args=(s,))
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     except ConnectionResetError:
         print("[ERROR]: The server has disconnected unexpectedly")
-        shutdown = True # TODO: Gestionar que l'usuari escrigui input després de que el servidor s'hagi desconnectat
+        shutdown = True  # TODO: Gestionar que l'usuari escrigui input després de que el servidor s'hagi desconnectat (peta)
         # Closing connection
         s.close()
         # TODO: Matar els threads al apagar
