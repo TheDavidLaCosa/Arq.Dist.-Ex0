@@ -58,17 +58,20 @@ def handle_input(sock):
                 print("[ERROR]: The value must be an int.")
                 continue
 
-            # Asking for the value
-            value = input("Value: ")
-            try:
-                value = int(value)
+            if mode == 2:
+                # Asking for the value
+                value = input("Value: ")
+                try:
+                    value = int(value)
 
-            # Handling the possible conversion error
-            except ValueError:
-                print("[ERROR]: The value must be an int.")
-                continue
+                # Handling the possible conversion error
+                except ValueError:
+                    print("[ERROR]: The value must be an int.")
+                    continue
 
-            print(value)
+                print(value)
+            else:
+                value = 0
 
             txt = format_action(mode, value)
             send(sock, txt)
