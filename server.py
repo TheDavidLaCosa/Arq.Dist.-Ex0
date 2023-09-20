@@ -24,10 +24,12 @@ def read(client):
 
 
 def update(value):
+    print("Update")
     shared_variable = value
     #brooadcast a todos los clientes
     for u in users:
-        send(u[0], str(shared_variable))
+        print(u[0])
+        send(u[0], f'{str(shared_variable)}')
 
 
 # Function that adds the header to the message
@@ -46,14 +48,17 @@ def deformat_message(text, client):
     mode = int(text[:1])
     value = text[2:]
 
+    print(f'{mode}|{value}')
+
     if mode == 1:
         read(client)
     elif mode == 2:
-        for i in range(1, 10):
+        update(value)
+        '''for i in range(1, 10):
             read_value = read()
             read_value+=1
             update(read_value)
-            time.sleep(10)
+            time.sleep(10)'''
     else:
         print(f'[ERROR]: Action {mode} doesn\'t exist')
 

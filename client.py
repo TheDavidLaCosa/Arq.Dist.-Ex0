@@ -21,7 +21,8 @@ def format_message(text):
 
 # Function that generates the structure of the message
 def format_action(mode, value):
-    text = f'{len(str(mode)):<{2}}{value}'
+
+    text = f'{str(mode):<{2}}{value}'
     return text
 
 
@@ -32,10 +33,11 @@ def send(s, text):
     text = format_message(text)
     s.send(text.encode(FORMAT))
 
-# Function that controlls the user input
+# Function that controls the user input
 def handle_input(sock):
 
     time.sleep(1.5)
+
 
     while True:
 
@@ -53,29 +55,28 @@ def handle_input(sock):
                     print("\n\n[ERROR]: The value must be 1 or 2.")
                     continue
 
+                if mode == 2:
+                    # Asking for the value
+                    value = input("Value: ")
+                    try:
+                        value = int(value)
+
+                    # Handling the possible conversion error
+                    except ValueError:
+                        print("[ERROR]: The value must be an int.")
+                        continue
+
+                    print(value)
+                else:
+                    value = 0
+
+                txt = format_action(mode, value)
+                send(sock, txt)
+
             # Handling the possible conversion error
             except ValueError:
                 print("\n\n[ERROR]: The value must be an int.")
                 continue
-
-            if mode == 2:
-                # Asking for the value
-                value = input("Value: ")
-                try:
-                    value = int(value)
-
-                # Handling the possible conversion error
-                except ValueError:
-                    print("[ERROR]: The value must be an int.")
-                    continue
-
-                print(value)
-            else:
-                value = 0
-
-            txt = format_action(mode, value)
-            send(sock, txt)
-
 
 if __name__ == "__main__":
 
@@ -114,6 +115,7 @@ if __name__ == "__main__":
                 # Showing the full message
                 if len(full_msg) - HEADER_SIZE == length:
                     print(full_msg[HEADER_SIZE:])  # The HEADER_SIZE: deletes the size of the message that is being shown
+
                     value = full_msg[HEADER_SIZE:]
 
                     try:
