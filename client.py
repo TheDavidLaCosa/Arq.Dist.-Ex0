@@ -50,12 +50,12 @@ def handle_input(sock):
 
                 # Checking if the number is 1 or 2
                 if mode != 1 and mode != 2:
-                    print("[ERROR]: The value must be 1 or 2.")
+                    print("\n\n[ERROR]: The value must be 1 or 2.")
                     continue
 
             # Handling the possible conversion error
             except ValueError:
-                print("[ERROR]: The value must be an int.")
+                print("\n\n[ERROR]: The value must be an int.")
                 continue
 
             if mode == 2:
