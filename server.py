@@ -9,13 +9,17 @@ FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "DISC"
 users = []
 
+shared_variable = 0
+
 
 def read():
     print("Read")
 
-
 def update(value):
-    print("Update")
+    shared_variable = value
+    #brooadcast a todos los clientes
+    for u in users:
+        send(u[0], str(shared_variable))
 
 # Function that adds the header to the message
 def format_message(text):
@@ -35,7 +39,11 @@ def deformat_message(text):
     if mode == 1:
         read()
     elif mode == 2:
-        update(value)
+        for i in range(1, 10):
+            read_value = read()
+            read_value+=1
+            update(read_value)
+            time.sleep(10)
     else:
         print(f'[ERROR]: Action {mode} doesn\'t exist')
 
