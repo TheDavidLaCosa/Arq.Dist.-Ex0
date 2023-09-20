@@ -9,6 +9,8 @@ HEADER_SIZE = 5
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = "DISC"
 shutdown = False
+shared_value=0
+
 
 
 # Function that adds the header to the message
@@ -20,8 +22,6 @@ def format_message(text):
 # Function that generates the structure of the message
 def format_action(mode, value):
     text = f'{len(str(mode)):<{2}}{value}'
-    print(f'MESSAGE: {text}')
-
     return text
 
 
@@ -114,6 +114,12 @@ if __name__ == "__main__":
                 # Showing the full message
                 if len(full_msg) - HEADER_SIZE == length:
                     print(full_msg[HEADER_SIZE:])  # The HEADER_SIZE: deletes the size of the message that is being shown
+                    value = full_msg[HEADER_SIZE:]
+
+                    try:
+                        shared_value = int(value)
+                    except ValueError:
+                        print(f'[ERROR]: The received value is not a number (received: {value})')
 
                     is_new_msg = True
                     full_msg = ""

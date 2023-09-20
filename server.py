@@ -16,7 +16,7 @@ users = []
 
 def read(client):
     print("Read")
-    txt = format_message(f'{str(shared_variable)} ssss')
+    txt = format_message(str(shared_variable))
     send(client, txt)
 
 
@@ -29,7 +29,7 @@ def update(value):
 # Function that adds the header to the message
 def format_message(text):
 
-    text = f'[Server message]: ' + text
+    #text = f'[Server message]: ' + text
     text = f'{len(text):<{HEADER_SIZE}}' + text
 
     return text
