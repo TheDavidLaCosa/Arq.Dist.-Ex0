@@ -36,12 +36,15 @@ def update(s, value):
 # Function that controls the user input
 def recieve_messages(sock):
 
+    global shared_value
+
     while True:
         length = sock.recv(HEADER_SIZE)
         mesg=sock.recv(int(length))
 
-        shared_value = bytes(mesg)
-        print(f'Received: {shared_value}')
+        print(f'Received: {int(mesg)}')
+        shared_value=int(mesg)
+        #return int(mesg)
 
     '''try:
         while True:
@@ -126,13 +129,14 @@ if __name__ == "__main__":
     try:
 
         while True:
+
             valor = read(sock)
+            update(sock, shared_value + 1)
 
-            print("read")
+            valor = read(sock)
+            update(sock, shared_value + 5)
 
-            update(sock, 500)
-            print("update")
-
+            break
             time.sleep(1)
 
 

@@ -11,9 +11,10 @@ DISCONNECT_MESSAGE = "DISC"
 
 shared_variable = 50
 
-users = []
+broadcast_users = []
 
 actions=[]
+action_cliens=[]
 
 
 def read(client):
@@ -35,16 +36,15 @@ def update(value):
     except ValueError:
         print("ERROR int")
     # Sending message to all the clients
-    for u in users:
+    for u in broadcast_users:
         print(u[0])
         send(u[0], f'{str(value)}')
 
 
 # Function that adds the header to the message
 def format_message(text):
-    # text = f'[Server message]: ' + text
-    text = f'{len(text):<{HEADER_SIZE}}' + text
 
+    text = f'{len(text):<{HEADER_SIZE}}' + text
     return text
 
 
@@ -66,12 +66,12 @@ def deformat_message(text, client):
 
 # Function that adds a user to the user list
 def add_user(user):
-    users.append(user)
+    broadcast_users.append(user)
 
 
 # Function that deletes a user from the user list
 def delete_user(user):
-    users.remove(user)
+    broadcast_users.remove(user)
 
 
 def send(client, message):
@@ -79,19 +79,45 @@ def send(client, message):
 
 
 # Funtion that handles multiple clients
-def process_mesg(mesg):
+def process_mesg(mesg, client):
     actions.extend(str(mesg).rstrip("&").split("&"))
+
+    for i in str(mesg).rstrip("&").split("&"):
+        action_cliens.append(client)
+
+
+def broadcast():
+    pass
 
 
 def handle_action(client, address):
 
+    global shared_variable
+
     while True:
         if len(actions) > 0:
-            action = actions.pop(0)
-            print(f"ACTION: {action}")
 
-            if action == "r":
-                print("AAAAAAAAAAAAAAAA")
+            action = actions.pop(0)
+            #print(f"ACTION: {action}")
+
+            print(f'{4-len(actions)}:{action}')
+
+            if action == "r": # READ
+                action_cliens.pop(0).send(str(shared_variable).encode(FORMAT))
+            else: # UPDATE
+
+                try:
+                    shared_variable = int(action)
+                    action_cliens.pop(0)
+                    broadcast()
+                except ValueError:
+                    print("[ERROR]: Unable to update value")
+
+
+
+            # TODO: registrar usuaris en llista
+
+            # Deleting the first user who requested an action
 
 
 def handle_client(client, address):
@@ -99,7 +125,9 @@ def handle_client(client, address):
     while True:
         mesg = (client.recv(100)).decode(FORMAT)
         print("\""+mesg+"\"")
-        process_mesg(mesg)
+        process_mesg(mesg, client)
+        print(f"Handle_client: {actions}\n{action_cliens}")
+
 
 
 if __name__ == "__main__":
@@ -134,7 +162,6 @@ if __name__ == "__main__":
 
         # Sending information to the client
         #send(client, message)
-        time.sleep(3)
 
         # TODO: Gestionar enviament a clients no existens (al fer broadcast)
-        print(users)
+        #print(broadcast_users)
