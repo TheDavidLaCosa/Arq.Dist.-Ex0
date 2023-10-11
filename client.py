@@ -18,7 +18,7 @@ sock = None
 def format_action(mode, value):
 
     if value:
-        text = f'{str(mode):<{1}}{value}'
+        text = f'{value}'
     else:
         text = f'{str(mode):<{1}}'
     return text + "&"
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
             print("read")
 
-            update(sock, 5)
+            update(sock, 500)
             print("update")
 
             time.sleep(1)

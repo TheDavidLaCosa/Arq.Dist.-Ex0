@@ -13,6 +13,8 @@ shared_variable = 50
 
 users = []
 
+actions=[]
+
 
 def read(client):
     print("Read")
@@ -78,7 +80,18 @@ def send(client, message):
 
 # Funtion that handles multiple clients
 def process_mesg(mesg):
-    print(str(mesg).rstrip("&").split("&"))
+    actions.extend(str(mesg).rstrip("&").split("&"))
+
+
+def handle_action(client, address):
+
+    while True:
+        if len(actions) > 0:
+            action = actions.pop(0)
+            print(f"ACTION: {action}")
+
+            if action == "r":
+                print("AAAAAAAAAAAAAAAA")
 
 
 def handle_client(client, address):
@@ -107,8 +120,11 @@ if __name__ == "__main__":
         client, address = s.accept()
 
         # Keep the client conncted
-        thread = threading.Thread(target=handle_client, args=(client, address))
-        thread.start()
+        handle_thread = threading.Thread(target=handle_client, args=(client, address))
+        handle_thread.start()
+
+        action_thread = threading.Thread(target=handle_action, args=(client, address))
+        action_thread.start()
 
         print(f'Connection nº{threading.active_count() - 1}: {address[1]}')  # TODO: Fer que s'incrementi i es decrementi quan entra i s'envà o solament incrementar?
 
