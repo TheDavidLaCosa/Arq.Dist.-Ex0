@@ -24,14 +24,23 @@ def format_action(mode, value):
     return text + "&"
 
 
-def read(s):
+def read():
+
+    global sock
+
     txt = format_action("r", "")
-    s.send(txt.encode(FORMAT))
+    sock.send(txt.encode(FORMAT))
 
 
-def update(s, value):
+def update(value):
+
+    global sock
+    global shared_value
+
+    shared_value = value
     txt=format_action("u", value)
-    s.send(txt.encode(FORMAT))
+    sock.send(txt.encode(FORMAT))
+
 
 # Function that controls the user input
 def recieve_messages(sock):
@@ -43,7 +52,7 @@ def recieve_messages(sock):
         mesg=sock.recv(int(length))
 
         print(f'Received: {int(mesg)}')
-        shared_value=int(mesg)
+        shared_value = int(mesg)
         #return int(mesg)
 
     '''try:
@@ -130,13 +139,10 @@ if __name__ == "__main__":
 
         while True:
 
-            valor = read(sock)
-            update(sock, shared_value + 1)
+            valor = read()
+            update(shared_value + 1)
+            update(shared_value + 5)
 
-            valor = read(sock)
-            update(sock, shared_value + 5)
-
-            break
             time.sleep(1)
 
 

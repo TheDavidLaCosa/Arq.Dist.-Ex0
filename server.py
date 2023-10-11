@@ -49,20 +49,6 @@ def format_message(text):
 
 
 # Function that decodes the received message
-def deformat_message(text, client):
-    # Getting the values
-    mode = int(text[:1])
-    value = text[2:]
-
-    print(f'{mode}|{value}')
-
-    if mode == "r":
-        read(client)
-    elif mode == "u":
-        update(value)
-    else:
-        print(f'[ERROR]: Action {mode} doesn\'t exist')
-
 
 # Function that adds a user to the user list
 def add_user(user):
@@ -80,17 +66,18 @@ def send(client, message):
 
 # Funtion that handles multiple clients
 def process_mesg(mesg, client):
+
     actions.extend(str(mesg).rstrip("&").split("&"))
 
     for i in str(mesg).rstrip("&").split("&"):
         action_cliens.append(client)
 
-
+    action_cliens.append(client)
 def broadcast():
     pass
 
 
-def handle_action(client, address):
+def handle_action():
 
     global shared_variable
 
@@ -103,7 +90,10 @@ def handle_action(client, address):
             print(f'{4-len(actions)}:{action}')
 
             if action == "r": # READ
-                action_cliens.pop(0).send(str(shared_variable).encode(FORMAT))
+
+                read(action_cliens.pop(0))
+
+                #act_c.send(str(shared_variable).encode(FORMAT))
             else: # UPDATE
 
                 try:
@@ -113,7 +103,7 @@ def handle_action(client, address):
                 except ValueError:
                     print("[ERROR]: Unable to update value")
 
-
+            print(len(action_cliens))
 
             # TODO: registrar usuaris en llista
 
@@ -126,8 +116,6 @@ def handle_client(client, address):
         mesg = (client.recv(100)).decode(FORMAT)
         print("\""+mesg+"\"")
         process_mesg(mesg, client)
-        print(f"Handle_client: {actions}\n{action_cliens}")
-
 
 
 if __name__ == "__main__":
@@ -142,6 +130,9 @@ if __name__ == "__main__":
           "|           SERVER           |\n"
           " ----------------------------\n\n")
 
+    action_thread = threading.Thread(target=handle_action, args=())
+    action_thread.start()
+
     # Listening loop
     while True:
         # Accept connection
@@ -150,9 +141,6 @@ if __name__ == "__main__":
         # Keep the client conncted
         handle_thread = threading.Thread(target=handle_client, args=(client, address))
         handle_thread.start()
-
-        action_thread = threading.Thread(target=handle_action, args=(client, address))
-        action_thread.start()
 
         print(f'Connection nº{threading.active_count() - 1}: {address[1]}')  # TODO: Fer que s'incrementi i es decrementi quan entra i s'envà o solament incrementar?
 
