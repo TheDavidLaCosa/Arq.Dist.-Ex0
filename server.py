@@ -23,21 +23,15 @@ def read(client):
     send(client, txt)
 
 
-def update(value):
+def update(value, client):
     print("Update")
 
-    shared_variable = value
+    global shared_variable
 
-    print(f"{type(value)} {value}")
-
-    try:
-        value = int(value) + 2
-
-    except ValueError:
-        print("ERROR int")
     # Sending message to all the clients
     for u in broadcast_users:
-        print(u[0])
+
+        print(f"No same: {u[0]}")
         send(u[0], f'{str(value)}')
 
 
@@ -73,8 +67,15 @@ def process_mesg(mesg, client):
         action_cliens.append(client)
 
     action_cliens.append(client)
-def broadcast():
-    pass
+def broadcast(client):
+
+    global shared_variable
+
+    for i in broadcast_users:
+
+        if i[0] == client:
+            update(shared_variable)
+
 
 
 def handle_action():
@@ -85,23 +86,24 @@ def handle_action():
         if len(actions) > 0:
 
             action = actions.pop(0)
-            #print(f"ACTION: {action}")
 
-            print(f'{4-len(actions)}:{action}')
+            print(f'{len(actions)+1}:{action}')
 
             if action == "r": # READ
 
-                read(action_cliens.pop(0))
+                read(action_cliens.pop(0)) # TODO: Quan es desconecta un usuari es segueix fent un pop i peta el thread, fent que tot el sistema pari d'interpretar el que ha de fer
 
-                #act_c.send(str(shared_variable).encode(FORMAT))
             else: # UPDATE
 
                 try:
                     shared_variable = int(action)
-                    action_cliens.pop(0)
-                    broadcast()
+                    print(f"shared_variable: {shared_variable}")
+
+                    update(shared_variable, action_cliens.pop(0))
+
                 except ValueError:
                     print("[ERROR]: Unable to update value")
+
 
             print(len(action_cliens))
 

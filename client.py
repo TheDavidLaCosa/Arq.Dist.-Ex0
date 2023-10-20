@@ -51,78 +51,11 @@ def recieve_messages(sock):
         length = sock.recv(HEADER_SIZE)
         mesg=sock.recv(int(length))
 
-        print(f'Received: {int(mesg)}')
+        print(f'Received: {int(mesg)} -> mes: \'{mesg}\'')
+
+
         shared_value = int(mesg)
         #return int(mesg)
-
-    '''try:
-        while True:
-            # Reading the header of the message to know the length
-            msg = sock.recv(HEADER_SIZE)
-
-            # Checking if the message is not none (sometimes the client sends none during the first connection)
-            if length:
-                length = int(length.decode(FORMAT))
-
-                # Reading the message
-                msg = client.recv(length).decode(FORMAT)
-
-                # Checking if the connection has been terminated
-                if msg == DISCONNECT_MESSAGE:
-                    connected = False
-                    print(f'Client {address[1]} has disconnected')
-                    delete_user((client, address[1]))
-                else:
-                    # Decoding the message received
-                    deformat_message(msg, client)
-
-                    print(f'The client with ID = {address[1]} said \'{msg}\'')
-
-    # Handling unexpected disconnect
-    except ConnectionResetError:
-        print(f'Client {address[1]} has disconnected unexpectedly')
-        delete_user((client, address[1]))
-
-    # Deleting the thread
-    client.close()'''
-
-    '''is_new_msg = False
-    full_msg = ""
-    length = 0
-
-    # Asking for the value
-    message = format_action(1, "")
-    send(sock, message)
-
-    # Waiting for the response
-    while True:
-
-        # Receiving the message in small sizes
-        msg = sock.recv(HEADER_SIZE)
-
-        # Reading the length of the message
-        if is_new_msg:
-            # Reading the header to know where the length of the message
-            length = int(msg[:HEADER_SIZE])  # The :HEADER_SIZE deletes the spaces after the message
-
-            # After reading the message we stop reading the header
-            is_new_msg = False
-
-        # Adding the part of the message received and adding it to the full message
-        full_msg += msg.decode(FORMAT)
-
-        # Showing the full message
-        if len(full_msg) - HEADER_SIZE == length:
-            print(full_msg[HEADER_SIZE:])  # The HEADER_SIZE: deletes the size of the message that is being shown
-
-            value = full_msg[HEADER_SIZE:]
-
-            try:
-                shared_value = int(value)
-                print(f'{value}')
-                continue
-            except ValueError:
-                print(f'[ERROR]: The received value is not a number (received: {value})')'''
 
 
 if __name__ == "__main__":
@@ -139,7 +72,7 @@ if __name__ == "__main__":
 
         while True:
 
-            valor = read()
+            valor = read() #TODO: FER UPDATE BÉ
             update(shared_value + 1)
             update(shared_value + 5)
 
