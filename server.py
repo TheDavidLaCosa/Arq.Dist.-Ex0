@@ -16,23 +16,56 @@ broadcast_users = []
 actions=[]
 action_cliens=[]
 
+using_variable=False
+
 
 def read(client):
-    print("Read")
-    txt = format_message(str(shared_variable))
-    send(client, txt)
+
+    global using_variable
+
+    while True:
+        if using_variable:
+            print("Wait")
+            continue
+
+        using_variable = True
+
+        print("Read")
+        txt = format_message(str(shared_variable))
+        send(client, txt)
+
+        using_variable = False
+        break
 
 
 def update(value, client):
-    print("Update")
 
+    global using_variable
     global shared_variable
 
-    # Sending message to all the clients
-    for u in broadcast_users:
+    while True:
+        if using_variable:
+            print("Wait")
+            continue
 
-        print(f"No same: {u[0]}")
-        send(u[0], f'{str(value)}')
+        using_variable = True
+
+        print("Update")
+
+        # Sending message to all the clients
+        for u in broadcast_users:
+            print(f"No same: {u[0]}")
+            send(u[0], f'{str(value)}')
+
+        using_variable = False
+        break
+
+
+
+
+
+
+
 
 
 # Function that adds the header to the message
@@ -62,11 +95,12 @@ def send(client, message):
 def process_mesg(mesg, client):
 
     actions.extend(str(mesg).rstrip("&").split("&"))
-
+    #print(str(mesg).rstrip("&").split("&"))
     for i in str(mesg).rstrip("&").split("&"):
         action_cliens.append(client)
 
     action_cliens.append(client)
+
 def broadcast(client):
 
     global shared_variable

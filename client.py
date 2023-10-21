@@ -11,6 +11,7 @@ DISCONNECT_MESSAGE = "DISC"
 shutdown = False
 shared_value=0
 sock = None
+using_variable=False
 
 
 
@@ -28,9 +29,22 @@ def read():
 
     global sock
     global shared_value
+    global using_variable
 
-    txt = format_action("r", "")
-    sock.send(txt.encode(FORMAT))
+    # Waiting for the variable to be free
+    while True:
+        if using_variable:
+            print("Wait")
+            continue
+
+        print("Read")
+        using_variable = True
+
+        txt = format_action("r", "")
+        sock.send(txt.encode(FORMAT))
+
+        using_variable = False
+        break
 
     return shared_value
 
@@ -39,10 +53,27 @@ def update(value):
 
     global sock
     global shared_value
+    global using_variable
 
-    shared_value = value
-    txt=format_action("u", value)
-    sock.send(txt.encode(FORMAT))
+    # Waiting for the variable to be free
+    while True:
+        if using_variable:
+            print("Wait")
+            continue
+
+        print("Update")
+        using_variable = True
+
+        shared_value = value
+        txt = format_action("u", value)
+        sock.send(txt.encode(FORMAT))
+
+        print(f"Send: {txt}")
+
+        using_variable = False
+        break
+
+
 
 
 # Function that controls the user input
@@ -58,16 +89,16 @@ def recieve_messages(sock):
         mesg=sock.recv(int(length))
 
         try:
+            shared_value = int(mesg)
             print(f'Received: {int(mesg)} -> mes: \'{mesg}\'')
         except ValueError:
             print(f"Transmission error, message recieved: {mesg}")
 
+            arr = str(mesg).strip("\'").split(' ')
+            mida = len(arr)
 
-        try:
-            shared_value = int(mesg)
-        except ValueError:
-            print(f"Transmission error, message recieved: {mesg}")
-        #return int(mesg)
+            shared_value = int(arr[mida - 1])
+
 
 
 if __name__ == "__main__":
