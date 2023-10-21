@@ -27,9 +27,12 @@ def format_action(mode, value):
 def read():
 
     global sock
+    global shared_value
 
     txt = format_action("r", "")
     sock.send(txt.encode(FORMAT))
+
+    return shared_value
 
 
 def update(value):
@@ -47,14 +50,23 @@ def recieve_messages(sock):
 
     global shared_value
 
+    # Read inicial per a tenir el valor actual del servidor
+    read()
+
     while True:
         length = sock.recv(HEADER_SIZE)
         mesg=sock.recv(int(length))
 
-        print(f'Received: {int(mesg)} -> mes: \'{mesg}\'')
+        try:
+            print(f'Received: {int(mesg)} -> mes: \'{mesg}\'')
+        except ValueError:
+            print(f"Transmission error, message recieved: {mesg}")
 
 
-        shared_value = int(mesg)
+        try:
+            shared_value = int(mesg)
+        except ValueError:
+            print(f"Transmission error, message recieved: {mesg}")
         #return int(mesg)
 
 
@@ -68,13 +80,15 @@ if __name__ == "__main__":
     thread = threading.Thread(target=recieve_messages, args=(sock,))
     thread.start()
 
+    time.sleep(3) # Temps d'espera per que el primer read es faci be i aixi evitar que es faci un update abans del que toca
+
     try:
 
         while True:
 
-            valor = read() #TODO: FER UPDATE BÉ
-            update(shared_value + 1)
-            update(shared_value + 5)
+            valor = read()
+            update(valor + 1)
+
 
             time.sleep(1)
 
