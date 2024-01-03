@@ -109,13 +109,12 @@ class ServerToken:
     def print_recv(self, id_c, txt):
         color = "\033[3" + str(id_c + 1) + "m"
         arr = txt.split("-")
-        action = "ERROR"
 
         if arr[0] == "T":
             action = "Token"
             print(f"[{color}S{id_c + 1}\033[0m] received: Token from {arr[1]}")
         elif arr[0] == "U":
-            print(f"[{color}S{id_c + 1}\033[0m] received: Update from {arr[1]}, value = {arr[2]}")
+            print(f"[{color}S{id_c + 1}\033[0m] received: Update from {arr[1]}, new value = {arr[2]}")
         elif arr[0] == "R":
-            print(f"[{color}S{id_c + 1}\033[0m] received: Read from {arr[1]}")
+            print(f"[{color}S{id_c + 1}\033[0m] received: Read from {arr[1]}, sending value = {arr[2]}")
 

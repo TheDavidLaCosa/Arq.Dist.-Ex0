@@ -74,11 +74,17 @@ class ClientToken:
             pass
 
         print("-----------------------------------------------")
+
+        # Getting current server value
+        valor = self.read()
+
+        # Action loop
         for i in range(3):
-            self.update(self.value + 1)
-            self.read()
+            self.update(valor + 1)
+            valor = self.read()
             time.sleep(1)
         print("-----------------------------------------------")
+
 
     # Function that returns the token
     def return_token(self):
@@ -93,7 +99,12 @@ class ClientToken:
         self.value = value
         self.sk_s.send(f"U-{self.id_c}-{value}".encode("utf-8"))
 
+
     def read(self):
         time.sleep(0.1)
-        self.sk_s.send(f"R-{self.id_c}".encode("utf-8"))
-        # TODO: wait for value
+        # Receiving updated
+        self.sk_s.send(f"R-{self.id_c}-{self.value}".encode("utf-8"))
+
+        #temp = self.sk_s.recv(1024).decode('utf-8').split("-")
+
+        return self.value
