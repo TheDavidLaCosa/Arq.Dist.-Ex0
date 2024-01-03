@@ -83,7 +83,7 @@ class ServerToken:
                 self.value = int(msg[2])
                 print(f"UPDATEEE: {msg[1]} - value: {msg[2]}")
                 # Sending updated value to all the clients
-                #self.send_all(f"U-{self.value}")
+                self.send_all(f"U-{self.value}")
 
             except ValueError:
                 print(f"\033[91mERROR!\033[0m: \"{msg}\"")
