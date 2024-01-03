@@ -18,7 +18,6 @@ action_cliens=[]
 
 using_variable=False
 
-
 def read(client):
 
     global using_variable
@@ -59,14 +58,6 @@ def update(value, client):
 
         using_variable = False
         break
-
-
-
-
-
-
-
-
 
 # Function that adds the header to the message
 def format_message(text):
