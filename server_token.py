@@ -10,6 +10,8 @@ class ServerToken:
         self.clients = []
         self.num_clients = num_clients
 
+        self.value = 0
+
         # Token
         self.has_token = True
 
@@ -18,7 +20,6 @@ class ServerToken:
         self.PORT = 60000
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.HOST, self.PORT))
-
 
     def start(self):
 
@@ -43,8 +44,6 @@ class ServerToken:
         # Sending token to a client
         self.send_token(0)
 
-
-
     def listen(self, id_c):
         while True:
             # Receive message
@@ -53,13 +52,10 @@ class ServerToken:
             # Decode message received
             self.decode_message(temp)
 
-
-
     # Function that sends a message to all the clients
-    def send_all(self):
+    def send_all(self, msg):
         for i in range(len(self.clients)):
-            self.clients[i].send("Hola".encode("utf-8"))
-
+            self.clients[i][0].send(msg.encode("utf-8"))
 
     # Function that sends the token to a client
     def send_token(self, id_c):
@@ -82,9 +78,13 @@ class ServerToken:
         # Handling update
         elif msg[0] == "U":
             try:
+                # Updating the value
                 self.value = int(msg[1])
-            except:
-                print(f"\033[91mERROR!\033[0m")
+                # Sending updated value to all the clients
+                self.send_all(f"U-{self.value}")
+
+            except ValueError:
+                print(f"\033[91mERROR!\033[0m: \"{msg}\"")
 
         # Handling read
         elif msg[0] == "R":
@@ -95,4 +95,3 @@ class ServerToken:
 
     def send_update(self, id_c):
         self.clients[id_c][0].send(f"U-{self.value}".encode("utf-8"))
-

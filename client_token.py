@@ -19,7 +19,7 @@ class ClientToken:
 
     def start_client(self):
         self.print_m(f"Waking up...")
-
+        time.sleep(0.2)
         # Starting action loop
         threading.Thread(target=self.actions, daemon=True).start()
 
@@ -43,7 +43,12 @@ class ClientToken:
 
         # Handling update
         elif msg[0] == "U":
-            self.value = int(msg[1])
+            try:
+                self.value = int(msg[1])
+                print(f"{self.id_c}{self.value}")
+                self.return_token()
+            except:
+                print(f"AAAAAAAAAAAAAAAAAAA {self.id_c}")
         # Handling unknown message
         else:
             self.print_m("UNKNOWN MESSAGE")
