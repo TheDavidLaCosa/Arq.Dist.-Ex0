@@ -4,7 +4,7 @@ import threading
 
 
 class ServerToken:
-    def __init__(self, num_clients):
+    def __init__(self, num_clients, port):
 
         # Clients
         self.clients = []
@@ -17,9 +17,9 @@ class ServerToken:
 
         # Server
         self.HOST = "localhost"
-        self.PORT = 60000
+        self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind((self.HOST, self.PORT))
+        self.socket.bind((self.HOST, self.port))
 
     def start(self):
 
@@ -72,6 +72,7 @@ class ServerToken:
 
         # Handling token message
         if msg[0] == "T":
+            print("TOKE!")
             # Sending token to another client
             self.send_token_random()
 
@@ -79,19 +80,27 @@ class ServerToken:
         elif msg[0] == "U":
             try:
                 # Updating the value
-                self.value = int(msg[1])
+                self.value = int(msg[2])
+                print(f"UPDATEEE: {msg[1]} - value: {msg[2]}")
                 # Sending updated value to all the clients
-                self.send_all(f"U-{self.value}")
+                #self.send_all(f"U-{self.value}")
 
             except ValueError:
                 print(f"\033[91mERROR!\033[0m: \"{msg}\"")
 
         # Handling read
         elif msg[0] == "R":
-            self.send_update(msg[1])
+            try:
+                self.send_read(int(msg[1]))
+            except ValueError:
+                pass
         # Handling unknown message
         else:
             self.print_m("UNKNOWN MESSAGE")
 
     def send_update(self, id_c):
-        self.clients[id_c][0].send(f"U-{self.value}".encode("utf-8"))
+        self.clients[id_c - 1][0].send(f"U-{self.value}".encode("utf-8"))
+
+    def send_read(self, id_c):
+        print(f"READ de {id_c}")
+        self.clients[id_c - 1][0].send(f"R-{self.value}".encode("utf-8"))
