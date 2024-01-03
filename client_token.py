@@ -75,8 +75,7 @@ class ClientToken:
 
         print("-----------------------------------------------")
         for i in range(3):
-            self.update()
-            self.value += 1
+            self.update(self.value + 1)
             self.read()
             time.sleep(1)
         print("-----------------------------------------------")
@@ -89,9 +88,10 @@ class ClientToken:
     def print_m(self, msg):
         print(f"[{self.color}{self.id_c}\033[0m]: {msg}")
 
-    def update(self):
+    def update(self, value):
         time.sleep(0.1)
-        self.sk_s.send(f"U-{self.id_c}-{self.value + 1}".encode("utf-8"))
+        self.value = value
+        self.sk_s.send(f"U-{self.id_c}-{value}".encode("utf-8"))
 
     def read(self):
         time.sleep(0.1)
