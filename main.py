@@ -22,7 +22,7 @@ if __name__ == "__main__":
     clients = []
     for i in range(num_clients):
         client = ClientToken(i + 1)
-        thread = threading.Thread(target=client.start, daemon=True)
+        thread = threading.Thread(target=client.start_client, daemon=True)
         clients.append((client, thread))
         clients[i][1].start()
 

@@ -15,7 +15,7 @@ class ClientToken:
         self.sk_s.bind(("localhost", self.port))
         self.sk_s.connect(("localhost", 60000))
 
-    def start(self):
+    def start_client(self):
         self.print_m(f"Waking up...")
 
         # Listening loop

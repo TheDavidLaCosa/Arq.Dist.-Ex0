@@ -1,5 +1,6 @@
 import random
 import socket
+import threading
 
 
 class ServerToken:
@@ -33,24 +34,22 @@ class ServerToken:
                 print(f"[ERROR]: Communication failed!")
                 continue
 
-            self.clients.append(client_sk)
+            temp = threading.Thread(target=self.listen, args=(i,), daemon=True)
+            self.clients.append((client_sk, temp))
+            temp.start()
+
             print(f"Process nº{i + 1} successfully connected!")
 
         # Sending token to a client
         self.send_token(0)
 
-        i = 0
+
+
+    def listen(self, id_c):
         while True:
-
-            print("AHHHH")
-            # Listening to the sockets of the other processes
-            temp = self.clients[0].recv(1024).decode("utf-8")
-            i += 1
-
-            print(f"aaaaa{temp}")
-
-
-
+            temp = self.clients[id_c][0].recv(1024).decode("utf-8")
+            print(f"[S{id_c + 1}]: listen")
+            self.send_token_random()
 
 
     # Function that sends a message to all the clients
@@ -62,7 +61,7 @@ class ServerToken:
     # Function that sends the token to a client
     def send_token(self, id_c):
         # TODO: Fer que es segueixi algun criteri d'enviament (prioritat?)
-        self.clients[id_c].send("T".encode("utf-8"))
+        self.clients[id_c][0].send("T".encode("utf-8"))
 
     # Function that sends the token to a random client
     def send_token_random(self):
