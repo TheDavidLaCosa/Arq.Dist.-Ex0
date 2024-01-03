@@ -9,6 +9,7 @@ class ServerToken:
         # Clients
         self.clients = []
         self.num_clients = num_clients
+        self.accesed_times = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]
 
         self.value = 0
 
@@ -77,7 +78,9 @@ class ServerToken:
             # Receiving token
             self.has_token = True
             # Sending token to another client
-            self.send_token_random()
+            self.accesed_times[int(msg[1])][1] += 1
+            #self.send_token_random()
+            self.send_token_least()
 
         # Handling update
         elif msg[0] == "U":
@@ -111,10 +114,13 @@ class ServerToken:
         arr = txt.split("-")
 
         if arr[0] == "T":
-            action = "Token"
             print(f"[{color}S{id_c + 1}\033[0m] received: Token from {arr[1]}")
         elif arr[0] == "U":
             print(f"[{color}S{id_c + 1}\033[0m] received: Update from {arr[1]}, new value = {arr[2]}")
         elif arr[0] == "R":
             print(f"[{color}S{id_c + 1}\033[0m] received: Read from {arr[1]}, sending value = {arr[2]}")
+
+    def send_token_least(self):
+        min= min(self.accesed_times)
+        self.send_token(min[0])
 
