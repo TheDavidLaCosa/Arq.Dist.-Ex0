@@ -15,14 +15,14 @@ if __name__ == "__main__":
     #Todo: Preguntar per nº clients
     num_clients = 5
 
-    server = ServerToken()
+    server = ServerToken(num_clients)
 
     threading.Thread(target=server.start, daemon=True).start()
 
     clients = []
     for i in range(num_clients):
         client = ClientToken(i + 1)
-        thread = threading.Thread(target=client.start(),daemon=True)
+        thread = threading.Thread(target=client.start, daemon=True)
         clients.append((client, thread))
         clients[i][1].start()
 
