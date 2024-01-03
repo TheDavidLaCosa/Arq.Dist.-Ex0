@@ -47,9 +47,12 @@ class ServerToken:
 
     def listen(self, id_c):
         while True:
+            # Receive message
             temp = self.clients[id_c][0].recv(1024).decode("utf-8")
-            print(f"[S{id_c + 1}]: listen")
-            self.send_token_random()
+            print(f"[S{id_c + 1}] received: {temp}")
+            # Decode message received
+            self.decode_message(temp)
+
 
 
     # Function that sends a message to all the clients
@@ -66,3 +69,30 @@ class ServerToken:
     # Function that sends the token to a random client
     def send_token_random(self):
         self.send_token(random.randint(0, self.num_clients - 1))
+
+    def decode_message(self, msg):
+
+        msg = msg.split("-")
+
+        # Handling token message
+        if msg[0] == "T":
+            # Sending token to another client
+            self.send_token_random()
+
+        # Handling update
+        elif msg[0] == "U":
+            try:
+                self.value = int(msg[1])
+            except:
+                print(f"\033[91mERROR!\033[0m")
+
+        # Handling read
+        elif msg[0] == "R":
+            self.send_update(msg[1])
+        # Handling unknown message
+        else:
+            self.print_m("UNKNOWN MESSAGE")
+
+    def send_update(self, id_c):
+        self.clients[id_c][0].send(f"U-{self.value}".encode("utf-8"))
+
