@@ -16,6 +16,9 @@ class ClientToken:
         self.sk_s.bind(("localhost", self.port))
         self.sk_s.connect(("localhost", port))
 
+        # Debug options
+        self.debug = True
+
         # UI
         self.color = "\033[3" + str(self.id_c) + "m"
 
@@ -72,15 +75,25 @@ class ClientToken:
 
         print("-----------------------------------------------")
         for i in range(3):
-            self.sk_s.send(f"U-{self.id_c}-{self.value + 1}".encode("utf-8"))
+            self.update()
             self.value += 1
+            self.read()
             time.sleep(1)
         print("-----------------------------------------------")
 
     # Function that returns the token
     def return_token(self):
         if self.has_token:
-            self.sk_s.send(f"T".encode("utf-8"))
+            self.sk_s.send(f"T-{self.id_c}".encode("utf-8"))
 
     def print_m(self, msg):
         print(f"[{self.color}{self.id_c}\033[0m]: {msg}")
+
+    def update(self):
+        time.sleep(0.1)
+        self.sk_s.send(f"U-{self.id_c}-{self.value + 1}".encode("utf-8"))
+
+    def read(self):
+        time.sleep(0.1)
+        self.sk_s.send(f"R-{self.id_c}".encode("utf-8"))
+        # TODO: wait for value

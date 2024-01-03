@@ -27,18 +27,5 @@ if __name__ == "__main__":
         clients.append((client, thread))
         clients[i][1].start()
 
-    while True: # TODO: Stop loop
+    while True:
         time.sleep(1)
-
-
-    '''i=0
-
-    init_server()
-    # Reading file containing the servers
-    n_elements=5
-
-    # Initaiating the servers   
-    while i < n_elements:
-        i+=1
-
-    # TODO: Send message to tell the server to start'''
