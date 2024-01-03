@@ -72,7 +72,8 @@ class ClientToken:
 
         print("-----------------------------------------------")
         for i in range(3):
-            self.sk_s.send(f"R-{self.id_c}".encode("utf-8"))
+            self.sk_s.send(f"U-{self.id_c}-{self.value + 1}".encode("utf-8"))
+            self.value += 1
             time.sleep(1)
         print("-----------------------------------------------")
 
