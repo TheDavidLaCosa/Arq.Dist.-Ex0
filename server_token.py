@@ -45,10 +45,11 @@ class ServerToken:
         self.send_token(0)
 
     def listen(self, id_c):
+        color = "\033[3" + str(id_c + 1) + "m"
         while True:
             # Receive message
             temp = self.clients[id_c][0].recv(1024).decode("utf-8")
-            print(f"[S{id_c + 1}] received: {temp}")
+            print(f"[{color}S{id_c + 1}\033[0m] received: {temp}")
             # Decode message received
             self.decode_message(temp)
 
@@ -72,7 +73,6 @@ class ServerToken:
 
         # Handling token message
         if msg[0] == "T":
-            print("TOKE!")
             # Sending token to another client
             self.send_token_random()
 

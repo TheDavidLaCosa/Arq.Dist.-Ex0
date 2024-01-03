@@ -7,7 +7,6 @@ class ClientToken:
     def __init__(self, id_c, port):
 
         self.value = 0
-        # Token
         self.has_token = False
 
         # Socket to server
@@ -16,6 +15,9 @@ class ClientToken:
         self.sk_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sk_s.bind(("localhost", self.port))
         self.sk_s.connect(("localhost", port))
+
+        # UI
+        self.color = "\033[3" + str(self.id_c) + "m"
 
     def start_client(self):
         self.print_m(f"Waking up...")
@@ -49,14 +51,14 @@ class ClientToken:
                 self.value = int(msg[1])
 
             except ValueError:
-                print(f"AAAAAAAAAAAAAAAAAAA {self.id_c} --- {msg}")
+                pass
 
         elif msg[0] == "R":
             try:
                 self.value = int(msg[1])
 
             except ValueError:
-                print(f"AAAAAAAAAAAAAAAAAAA {self.id_c} --- {msg}")
+                pass
 
         # Handling unknown message
         else:
@@ -65,11 +67,14 @@ class ClientToken:
 
     # Function that performs the actions
     def actions(self):
-        if self.has_token:
+        if not self.has_token:
             pass
+
+        print("-----------------------------------------------")
         for i in range(3):
             self.sk_s.send(f"R-{self.id_c}".encode("utf-8"))
             time.sleep(1)
+        print("-----------------------------------------------")
 
     # Function that returns the token
     def return_token(self):
@@ -77,4 +82,4 @@ class ClientToken:
             self.sk_s.send(f"T".encode("utf-8"))
 
     def print_m(self, msg):
-        print(f"[{self.id_c}]: {msg}")
+        print(f"[{self.color}{self.id_c}\033[0m]: {msg}")
